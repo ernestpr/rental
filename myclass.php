@@ -1,5 +1,175 @@
 <?php // content="text/plain; charset=utf-8"
 
+require('fpdf181/fpdf.php');
+
+class PDF extends FPDF
+{
+
+public $revenue=array();
+
+public $totalexpenses =array();
+public $expenses=array();
+public $payment=array();
+public $cashflow=array();
+public $cashoncash=array();
+public $propertyvalue=array();
+public $equity=array();
+public $balance=array();
+public $profit=array();
+public $annualreturn=array();
+function BasicTable($x, $col, $data)
+{
+  //$this->SetLeftMargin($x);
+  $i=00;
+  $this->setX($x);
+  
+foreach($data as $key=>$t)
+  {
+
+  if (1)
+  {
+  $this->Cell(40,10,$t,0,0,"R");
+  if($i%$col==$col-1){
+    $this->Ln();
+    $this->setX($x);
+    
+    
+  }}
+  $i++;
+  }
+  
+
+}
+
+
+
+function BasicTable3($x, $col, $data)
+{
+  //$this->SetLeftMargin($x);
+ 
+  $this->setX($x);
+  
+  foreach($data as $key=>$t)
+  {
+    if ($key % 2==0) 
+    {
+      // Here is the even side 
+      $title=$t;
+    }
+    else
+
+    {
+      //odd number side
+      //If its numeric and is zero then don't output
+      $number=$t;
+
+    }  
+    if (is_numeric($t) && $t>0  )
+      {
+        $this->Cell(40,10,$title,0,0,"R");
+        $this->Cell(20,10,$number,0,0,"R");
+        $this->Ln();
+        $this->setX($x);  
+      }
+
+
+  
+  }
+  
+
+}
+
+function BasicTable2($x, $col, $data)
+{
+  //$this->SetLeftMargin($x);
+  $this->SetFont('Arial','',12);
+  $i=00;
+  $row=0;
+  $this->setX($x);
+  
+foreach($data as $t)
+  {
+
+  $this->Cell(35,10,$t,0,0,"C");
+  //set large font for data
+
+  if($i%$col==$col-1){
+
+    $this->Ln();
+    $this->setX($x);
+
+    $row++;
+    $this->SetFont('Arial','',11);
+    if($row % 2==1)$this->SetFont('Arial','B',14);
+  }
+  $i++;
+  }
+  
+
+}
+
+function buildpdf()
+{
+
+  $h="<table class='table'>";
+  $c=array("Year 1","Year 2", "Year 5", "Year 10", "Year 15", "Year 20", "Year 30");
+  $b=array(" ","Total Annual Income","Total Annual Expenses","Operating Expenses","Mortgage Payment","Total Annual Cashflow","Cash on Cash ROI","Property Value","Equity","Loan Balance","Total Profit if Sold *","Annualized Total Return");
+  $a=array(0,1,4,9,14,19,29);
+
+  $layout=array(0,0,0,0,0,0,1,0,0,0,0,1);
+  $this->SetFont('Arial','',9);
+  for ($i=0;$i<12;$i++)
+  {
+    $this->setX(20);
+    //$h=$h. "<tr><td class='text-right'>" . $b[$i]. "</td>";
+    $this->Cell(22,10,$b[$i],0,0,"R");
+    
+    foreach($a as $key=>$k)
+      
+    {
+    if ($i==0) $value=$c[$key];  
+    if ($i==1) $value=$this->revenue[$k];
+    if ($i==2) $value=$this->totalexpenses[$k];
+    if ($i==3) $value=$this->expenses[$k];
+    if ($i==4) $value=$this->payment*12;
+    if ($i==5) $value=$this->cashflow[$k];
+    if ($i==6) $value=$this->cashoncash[$k];
+    if ($i==7) $value=$this->propertyvalue[$k];
+    if ($i==8) $value=$this->equity[$k];
+    if ($i==9) $value=$this->balance[$k];
+    if ($i==10)$value=$this->profit[$k];
+    if ($i==11)$value=$this->annualreturn[$k];
+    
+    $percent="";$dollar="$";
+    if($layout[$i]==1){$percent="%";$dollar="";}
+    if ($i>0)
+      {
+    //  $h=$h . "<td class='text-right'>" . $dollar. number_format($value,2) . $percent  ."</td>" ;
+        $this->Cell(22,10,$dollar. number_format($value,2) . $percent,0,0,"R");
+      }
+    
+    if ($i==0)
+
+      {
+          //$h=$h . "<td class='text-right'>" .  $value  ."</td>" ;
+        $this->Cell(22,10,$value ,0,0,"R");
+
+      }
+      
+    }echo "$";
+    $this->Ln();
+    
+    }
+   // $h=$h. "</tr>";
+
+
+  }
+  //echo $h. "</table>";
+
+    
+}//end buildpdf
+
+
 
 
 
@@ -9,7 +179,7 @@ class Graphprep
 public $salesexpenses=11;
 //how much cash needed to close deal
 public $cashneeded;
-
+public $property_closing_costs;
 public $propertyvalue=array();
 public $a=array();
 public $b=array();
@@ -68,9 +238,10 @@ function buildit()
   $b=array(" ","Total Annual Income","Total Annual Expenses","Operating Expenses","Mortgage Payment","Total Annual Cashflow","Cash on Cash ROI","Property Value","Equity","Loan Balance","Total Profit if Sold *","Annualized Total Return");
   $a=array(0,1,4,9,14,19,29);
 
+  $layout=array(0,0,0,0,0,0,1,0,0,0,0,1);
   for ($i=0;$i<12;$i++)
   {
-    $h=$h. "<tr><td>" . $b[$i]. "</td>";
+    $h=$h. "<tr><td class='text-right'>" . $b[$i]. "</td>";
     foreach($a as $key=>$k)
       
     {
@@ -87,12 +258,12 @@ function buildit()
     if ($i==10)$value=$this->profit[$k];
     if ($i==11)$value=$this->annualreturn[$k];
     
-    
-
-    if ($i>0)$h=$h . "<td class='text-right'>" . "$". number_format($value,2)   ."</td>" ;
+    $percent="";$dollar="$";
+    if($layout[$i]==1){$percent="%";$dollar="";}
+    if ($i>0)$h=$h . "<td class='text-right'>" . $dollar. number_format($value,2) . $percent  ."</td>" ;
     
       if ($i==0)
-        {$h=$h . "<td>" .  $value  ."</td>" ;
+        {$h=$h . "<td class='text-right'>" .  $value  ."</td>" ;
       
     }
     }
@@ -101,6 +272,11 @@ function buildit()
   }
   echo $h. "</table>";
 }
+
+
+//create table for pdf
+
+
 
 
 //growth in property value
@@ -130,13 +306,13 @@ for ($i=0;$i<=$this->periods;$i++)
 
         array_push($this->noi, $this->revenue[$i]-$this->expenses[$i]);
         array_push($this->cashoncash, ($this->revenue[$i]-$this->totalexpenses[$i])/$this->cashneeded*100);
-        array_push($this->profit, ($this->propertyvalue[$i] - 170000 + $accumcash + $this->pv- $this->balance[$i]-8000 ));
+        array_push($this->profit, ($this->propertyvalue[$i] - $this->purchaseprice + $accumcash + $this->pv- $this->balance[$i]-$this->property_closing_costs ));
 
         array_push($this->equity, $this->equitystart+$this->pv-$this->balance[$i]);
        //annual return
        
         array_push($this->annualreturn, 100*(pow(1+$this->profit[$i]/$this->cashneeded,1/($i+1))-1));
-        echo $i . "-" . $this->profit[$i] ;
+        
       }
 
 
@@ -181,7 +357,7 @@ for ($i=11;$i<=$this->periods*12;$i++)
   $this->payment*(pow((1+$interest),$i)-1)/$interest);
 
       }
-
+    array_push($this->balance,0);
 
 }
 

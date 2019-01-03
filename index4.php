@@ -8,94 +8,39 @@ include "myclass.php";
 ?>
 
 <?php 
-$total=($property_garbage+$property_taxes+$property_hoa+$property_pmi+$property_insurance+$property_electricity
-+$property_watersewer+$property_other_expense)/12;
-$year_expenses=($property_garbage+$property_taxes+$property_hoa+$property_pmi+$property_insurance+$property_electricity
-+$property_watersewer+$property_other_expense);
 
-$interest=$property_interest_rate/1200;
-$periods=$property_amortized*12;
-$pv=$property_purchase_price*(1-$property_downpayment/100);
-$loan_payment=payment($interest, $periods, $pv);
-$down_payment=$property_purchase_price*$property_downpayment/100;
-$year_loan_payment=12*$loan_payment;
-
-//got it
-$year_1_loanBalance=loanBalance($interest,12,$pv,$loan_payment);
-$year_2_loanBalance=loanBalance($interest,24,$pv,$loan_payment);
-$year_3_loanBalance=loanBalance($interest,36,$pv,$loan_payment);
-$year_5_loanBalance=loanBalance($interest,60,$pv,$loan_payment);
-$year_10_loanBalance=loanBalance($interest,120,$pv,$loan_payment);
-$year_20_loanBalance=loanBalance($interest,240,$pv,$loan_payment);
-$year_30_loanBalance=loanBalance($interest,360,$pv,$loan_payment);
-
-$noi=$property_rent - $total;
-$cashflow= $noi-$loan_payment;
-$cash_on_cash=100*(12* $cashflow)/$down_payment; //adding more expenses to this category
-
-
-//equity
-
+//Total Expenses
 
 $year_1_revenue=$property_rent*12;
 
-$year_2_revenue=$year_1_revenue*(1+$revenue_growth/100);
-$year_3_revenue=$year_1_revenue*pow(1+$revenue_growth/100,2);
-$year_5_revenue=$year_1_revenue*pow(1+$revenue_growth/100,4);
-$year_10_revenue=$year_1_revenue*pow(1+$revenue_growth/100,9);
-$year_20_revenue=$year_1_revenue*pow(1+$revenue_growth/100,19);
-$year_30_revenue=$year_1_revenue*pow(1+$revenue_growth/100,29);
-
 $year_1_expenses=($property_garbage+$property_taxes+$property_hoa+$property_pmi+$property_insurance+$property_electricity
-+$property_watersewer+$property_other_expense+12*$property_management/100*$property_rent+12*$property_vacancy/100*$property_rent
-+ 12*$property_repairs/100*$property_rent);
-/*
-echo "insurance=". $property_insurance . "<p>";
-echo "garbage=". $property_garbage . "<p>";
-echo "taxes=". $property_taxes . "<p>";
-echo "Electricity=". $property_electricity . "<p>";
-echo "Management=". $property_management/100*$property_rent . "<p>";
-echo "Vacancy=". $property_vacancy/100*$property_rent . "<p>";
-echo "Repair=". $property_repairs/100*$property_rent . "<p>";
++$property_watersewer+$property_other_expense+$property_management/100*$year_1_revenue+$property_vacancy/100*$year_1_revenue+
+$property_repairs/100*$year_1_revenue);
+
+//monthly expenses
+$monthly_expenses=$year_1_expenses/12;
+
+//Net Operating Income
+$noi=$property_rent - $monthly_expenses;
+
+$interest=$property_interest_rate/1200;
+$periods=$property_amortized*12;
+
+//pv is present value of loan
+//Downpayment
+$down_payment=$property_purchase_price*$property_downpayment/100;
+$pv=$property_purchase_price-$property_downpayment;
+
+//Loan Payment
+$loan_payment=payment($interest, $periods, $pv);
+$year_loan_payment=12*$loan_payment;
 
 
-echo $year_1_expenses/12 ."-";
-echo $property_management/100*$property_rent. "-";
-echo $property_vacancy/100*$property_rent;
+$cashflow= $noi-$loan_payment;
+$cash_on_cash=100*(12* $cashflow)/$down_payment; //adding more expenses to this category
 
-*/
-$year_2_expenses=$year_1_expenses*(1+$expense_growth/100);
-$year_3_expenses=$year_1_expenses*pow(1+$expense_growth/100,2);
-$year_5_expenses=$year_1_expenses*pow(1+$expense_growth/100,4);
-$year_10_expenses=$year_1_expenses*pow(1+$expense_growth/100,9);
-$year_20_expenses=$year_1_expenses*pow(1+$expense_growth/100,19);
-$year_30_expenses=$year_1_expenses*pow(1+$expense_growth/100,29);
-
-$year_1_cashflow=$year_1_revenue-$year_1_expenses-$year_loan_payment;
-$year_2_cashflow=$year_2_revenue-$year_2_expenses-$year_loan_payment;
-$year_3_cashflow=$year_3_revenue-$year_3_expenses-$year_loan_payment;
-$year_5_cashflow=$year_5_revenue-$year_5_expenses-$year_loan_payment;
-$year_10_cashflow=$year_10_revenue-$year_10_expenses-$year_loan_payment;
-$year_20_cashflow=$year_20_revenue-$year_20_expenses-$year_loan_payment;
-$year_30_cashflow=$year_30_revenue-$year_30_expenses-$year_loan_payment;
-
-//equity
-
-$year_1_equity=$down_payment+$year_1_cashflow+$pv-$year_1_loanBalance;
-$year_2_equity=$down_payment+ $year_1_cashflow+$year_2_cashflow+$pv-$year_2_loanBalance;
-$year_3_equity=$down_payment+ $year_1_cashflow+$year_2_cashflow+$year_3_cashflow+$pv-$year_3_loanBalance;
-$year_5_equity=$down_payment+ $year_1_cashflow+$year_2_cashflow+$year_3_cashflow+$year_5_cashflow+$pv-$year_1_loanBalance;
-$year_10_equity=$down_payment+ $year_1_cashflow+$year_2_cashflow+$year_3_cashflow+$year_5_cashflow+$year_10_cashflow+$pv-$year_10_loanBalance;
-$year_20_equity=$down_payment+ $year_1_cashflow+$year_2_cashflow+$year_3_cashflow+$year_5_cashflow+$year_10_cashflow+$year_20_cashflow+$pv-$year_20_loanBalance;
-$year_30_equity=$down_payment+ $year_1_cashflow+$year_2_cashflow+$year_3_cashflow+$year_5_cashflow+$year_20_cashflow+$year_30_cashflow+$pv-$year_30_loanBalance;
-
-$year_1_noi=$year_1_revenue-$year_1_expenses;
-$year_2_noi=$year_2_revenue-$year_2_expenses;
-$year_3_noi=$year_3_revenue-$year_3_expenses;
-$year_5_noi=$year_5_revenue-$year_5_expenses;
-$year_10_noi=$year_10_revenue-$year_10_expenses;
-$year_20_noi=$year_20_revenue-$year_20_expenses;
-$year_30_noi=$year_30_revenue-$year_30_expenses;
+$deal_cost=$property_purchase_price+$property_closing_costs;
+$total_cash_needed=$property_closing_costs+$down_payment;
 ?>
 <html>
 <head>
@@ -148,13 +93,21 @@ $year_30_noi=$year_30_revenue-$year_30_expenses;
     <table class="table">
 
         <tr>
+          <td>Closing Costs</td>
+          <td><?php echo "$".number_format($property_closing_costs) ?></td>
+        </tr>
+        <tr>
+          <td>Project Cost</td>
+          <td><?php echo "$".number_format($deal_cost) ?></td>
+        </tr>
+        <tr>
           <td>Down Payment</td>
-          <td><?php echo number_format($down_payment) ?></td>
+          <td><?php echo "$".number_format($down_payment) ?></td>
         </tr>
 
         <tr>
           <td>Loan Amount</td>
-          <td><?php echo number_format($pv) ?></td>
+          <td><?php echo "$".number_format($pv) ?></td>
         </tr>
 
         <tr>
@@ -171,7 +124,10 @@ $year_30_noi=$year_30_revenue-$year_30_expenses;
           <td>Monthly P/I</td>
           <td><?php echo "$". number_format($loan_payment,2) ?></td>
         </tr>
-
+        <tr>
+          <td>Total Cash Required</td>
+          <td><?php echo "$". number_format($total_cash_needed,2) ?></td>
+        </tr>
 
         </table>
     </div><!---end red --->
@@ -185,7 +141,7 @@ $year_30_noi=$year_30_revenue-$year_30_expenses;
             <td>Total Income<td>Monthly Expenses</td><td>Net Operating Income</td>
           </tr>
 <tr>
-<td><h2><?php echo "$". number_format($property_rent) ?></h2><td><h2><?php echo "$". number_format($total) ?></h2></td><td><h2><?php echo "$". number_format($noi*12);  ?></h2></td>
+<td><h2><?php echo "$". number_format($property_rent) ?></h2><td><h2><?php echo "$". number_format($year_1_expenses) ?></h2></td><td><h2><?php echo "$". number_format($noi*12);  ?></h2></td>
 
     </tr>
 
@@ -205,7 +161,7 @@ $c1= new Graphprep($property_downpayment,$property_purchase_price,$property_inte
 
 
 //compute($propertygrowth, $expensegrowth,$revenuegrowth,$expensestart,$revenuestart)
-
+$c1->property_closing_costs=$property_closing_costs;
 $c1->compute($property_growth, $expense_growth,$revenue_growth,$year_1_expenses, $property_rent*12);
 
 $c1->checkit($property_electricity, "Electricity");
@@ -220,8 +176,8 @@ $c1->checkit(12*$property_vacancy/100*$property_rent,"Property Vacancy");
 $c1->checkit(12*$property_management/100*$property_rent, "Management Fees");
 $c1->checkit(12*$property_repairs/100*$property_rent, "Property Repair");
 
-var_dump($c1->balance);
-$c1->buildit();
+
+
 
 require_once ('jpgraph/jpgraph.php');
 require_once ('jpgraph/jpgraph_pie.php');
@@ -237,13 +193,13 @@ $labels=$c1->b;
 // Create the Pie Graph. 
 
 
-$graph = new PieGraph(450,350);
+$graph = new PieGraph(550,290);
 
 $theme_class= new VividTheme;
 $graph->SetTheme($theme_class);
 
 // Set A title for the plot
-$graph->title->Set("Property Expenses");
+//$graph->title->Set("Property Expenses");
 
 // Create
 $p1 = new PiePlot3D($data);
@@ -255,7 +211,10 @@ $p1->SetColor('black');
 $p1->ExplodeSlice(1);
 $p1->SetLabels($labels);
 $p1->SetLabelPos(.75);
-$graph->Stroke('mypie.jpg');
+$p1->SetLabelMargin(30);
+$p1->SetAngle(45);
+
+$graph->Stroke('mypie.png');
 
 
 
@@ -268,7 +227,7 @@ $datay3=$c1->propertyvalue;
 $graph = new Graph(600,400);
 $graph->SetScale("textlin");
 $graph->SetShadow();
-$graph->img->SetMargin(49,30,20,40);
+$graph->img->SetMargin(40,30,20,40);
  
 // Create the linear plots for each category
 $dplot1 = new LinePLot($datay1);
@@ -298,14 +257,14 @@ $graph->yaxis->title->SetFont(FF_FONT1,FS_BOLD);
 $graph->xaxis->title->SetFont(FF_FONT1,FS_BOLD);
  
 // Display the graph
-$graph->Stroke("loanBalance.jpg");
+$graph->Stroke("loanBalance.png");
 
 // Create the linear plots for each Income,expenses, cashflow
 
 $graph1 = new Graph(600,400);
 $graph1->SetScale("textlin");
 $graph1->SetShadow();
-$graph1->img->SetMargin(49,30,20,40);
+$graph1->img->SetMargin(40,30,20,40);
  
 // Create the linear plots for each category
 $dplot1 = new LinePLot($c1->noi);
@@ -335,13 +294,13 @@ $graph1->yaxis->title->SetFont(FF_FONT1,FS_BOLD);
 $graph1->xaxis->title->SetFont(FF_FONT1,FS_BOLD);
  
 // Display the graph
-$graph1->Stroke("income.jpg");
+$graph1->Stroke("income.png");
 
 ?>
 
 <div class="row"">
   <div class="col">
-<img src="mypie.jpg">
+<img src="mypie.png">
 </div>
 <div class="col">
   <h2>Monthly Expenses</h2>
@@ -355,17 +314,17 @@ $graph1->Stroke("income.jpg");
 <!---//end of graph--->
 
 
-
+<?php $c1->buildit();?>
 
 
 <div class="row">
   <div class="col">
     
-    <img src="loanBalance.jpg" width=500>
+    <img src="loanBalance.png" width=500>
   </div>
 
   <div class="col">
-<img src="income.jpg" width=500>
+<img src="income.png" width=500>
   </div>  
 
 
@@ -382,5 +341,106 @@ $graph1->Stroke("income.jpg");
 </div>
 </div>
 
+<?php
+$pdf= New PDF();
+$pdf->AddPage();
+$pdf->SetFont('Arial','B',28);
+$pdf->Cell(40,10,'Rental Analysis Results');
+$pdf->SetY(10);
+$pdf->Ln();
+$pdf->SetFont('Arial','B',14);
+$pdf->Cell(30,10, $property_address. "," . $property_city . "," . $property_state . " ". $property_zip );
+$pdf->Ln();
+$pdf->SetFont('Arial','',10);
+$pdf->MultiCell(80,5,"Beautiful New Construction - This is a one level ranch home with 4 bedrooms and 2 baths with over 1800 sq. ft. This home features an open floor plan, living room with lots of natural light and a spacious eat-in kitchen with granite counter tops and stainless steal appliances. Large owners bedroom, a full on-suite with a garden tub and walk-in shower, complete with granite counter tops and two walk-in closets. ");
+
+$pdf->Line(10,80,200,80);
+$pdf->Ln(5);
+$pdf->SetFont('Arial','B',14);
+
+
+$pdf->SetFont('Arial','B',24);
+$pdf->Cell(10,10, "Price $". number_format($property_purchase_price));
+$pdf->Ln(1);
+//$pdf->SetFont('Arial','B',28);
+//$pdf->Cell(10,10, "Price");
+//$pdf->Ln(10);
+
+$pdf->SetFont('Arial','',13);
+$data=array("Closing Costs","$".number_format($property_closing_costs,2),
+  "Project Costs","$".number_format($deal_cost,2),
+  "Down Payment", "$".number_format($down_payment,2),
+  "Loan Amount", "$".number_format($pv,2),
+"Amortized Over", number_format($property_amortized), 
+"Interest Rate", number_format($property_interest_rate,2)."%", 
+"Monthly P/I", "$".number_format($loan_payment,2),
+"Cash Required", "$".number_format($total_cash_needed,2));
+//$pdf->BasicTable(100,2,$data);
+$pdf->SetY(90);
+$pdf->BasicTable(10,2,$data);
+
+$data=array("Total\n Income", "Monthly Expenses", "(NOI)",
+"$".number_format($property_rent),"$".number_format($monthly_expenses),"$".number_format($noi),"Monthly\n Cash Flow", "Down\n Payment", "Cash \non Cash",
+"$".number_format($cashflow,2),"$".number_format($down_payment),number_format($cash_on_cash,2). "%");
+$pdf->SetY(90);
+$pdf->BasicTable2(100,3,$data);
+
+$pdf->Line(10,170,200,170);
+
+
+
+//set image of photo
+
+$pdf->Image('images/'.$property_photo,120,20,70);
+
+//pie charts
+$pdf->Image('mypie.png',10,175,120);
+
+$data=array("Electricity",number_format($property_electricity/12,2),
+  "Water and Sewer",number_format($property_watersewer/12,2),
+  "Insurance",number_format($property_insurance/12,2),
+  "Garbage", number_format($property_garbage/12,2),
+  "Property Taxes", number_format($property_taxes/12,2), 
+  "P/I",number_format($loan_payment,2),
+  "Vacancy",number_format($property_vacancy/100*$year_1_revenue/12,2),
+  "PMI",number_format($property_pmi/12,2),
+  "HOA", number_format($property_other_expense/12,2),
+  "Management Fees",number_format($property_management/100*$year_1_revenue/12,2),
+  "Property Repairs",number_format($property_repairs/100*$year_1_revenue/12,2)
+);
+
+
+$pdf->SetY(170);
+$pdf->BasicTable3(130,2,$data);
+
+
+$pdf->AddPage();
+
+//set values
+$pdf->revenue=$c1->revenue;
+$pdf->totalexpenses =$c1->totalexpenses ;
+$pdf->expenses=$c1->expenses;
+$pdf->payment=$c1->payment;
+$pdf->cashflow=$c1->cashflow;
+$pdf->cashoncash=$c1->cashoncash;
+$pdf->propertyvalue=$c1->propertyvalue;
+$pdf->equity=$c1->equity;
+$pdf->balance=$c1->balance;
+$pdf->profit=$c1->profit;
+$pdf->annualreturn=$c1->annualreturn;
+
+
+$pdf->buildpdf();
+$pdf->Image('loanBalance.png',50,210,110);
+$pdf->Image('income.png',50,135,110);
+$pdf->Output('F','out.pdf');
+
+
+//print legends on chart
+$data=array("Electricity","Water and Sewer", "Insurance","Garbage", "Property Taxes","Property Insurance", "P/I", "Vacancy", "PMI", "HOA", "Other Expense","Management Fees", "Property Repairs");
+
+
+?>
+<a href="out.pdf">file</a>
 </body>
 </html>

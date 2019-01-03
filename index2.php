@@ -159,6 +159,14 @@ include "db.php";
       <div class="col"></div>
   </div>	
 
+<div class="row   rowheight"> </div>
+    <div class="row">
+      <div class="col">
+          <label for="propertyClosingCosts">Closing Costs</label>
+          <input type="text" class="form-control" name="propertyClosingCosts" id="property_city" placeholder="" value="<?php echo $property_closing_costs?>" required>
+      </div>
+      <div class="col"></div>
+  </div>  
   
   <div class="row   rowheight"> </div>
 
@@ -296,7 +304,16 @@ include "db.php";
 
 </div>
 
+</div><!--next row-->
 
+<div class="row">
+
+<div class="col">
+  <label for="propertyVacancy">Sales Fees %</label>
+  <input type="text" class="form-control" name="propertySaleFees" id="propertySaleFees" placeholder="" value="<?php echo $property_sale_fees?>" >
+
+</div>
+<div class="col"></div><div class="col"></div><div class="col"></div>
 
 </div>  
 

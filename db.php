@@ -37,6 +37,9 @@ if(isset($_GET["id"]))$id=$_GET["id"];
     $property_expenditures="";
     $property_repairs="";
     $property_other_expense="";
+    $property_closing_costs="";
+    $property_sale_fees="";
+
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -86,6 +89,8 @@ if (isset($_POST["update_3"]) && isset($_POST["id"]))
     property_expenditures='". $_POST["propertyExpenditures"]. "',
     property_repairs='" . $_POST["propertyRepairs"]. "',
     property_growth='". $_POST["propertyGrowth"]. "',
+    property_closing_costs='". $_POST["propertyClosingCosts"]. "',
+    property_sale_fees='". $_POST["propertySaleFees"]. "',
     property_other_expense='" . $_POST["propertyOtherExpense"]. "'". $photoupdated .
     "
     
@@ -131,7 +136,9 @@ $sql= "INSERT INTO property
     property_expenditures,
     property_repairs,
     property_other_expense,
-    property_image
+    property_image,
+    property_closing_costs,
+    property_sale_fees
 
 ) VALUES 
 
@@ -164,6 +171,8 @@ $sql= "INSERT INTO property
     '" . $_POST["propertyExpenditures"]. "',
     '" . $_POST["propertyRepairs"]. "',
     '" . $_POST["propertyOtherExpense"]. "',
+    '" . $_POST["propertyClosingCosts"]. "',
+    '" . $_POST["propertySaleFees"]. "',
     '" . $file_upload_name. "'
 
 )";
@@ -193,7 +202,9 @@ $sql= "INSERT INTO property
     $property_vacancy=$_POST["propertyVacancy"];
     $property_expenditures=$_POST["propertyExpenditures"];
     $property_repairs=$_POST["propertyRepairs"];
-    
+    $property_closing_costs=$_POST["propertyClosingCosts"];
+
+    $property_sale_fees=$_POST["propertySaleFees"];
     //if uploaded assign name
     $property_photo=$file_upload_name;
     
@@ -252,6 +263,8 @@ if ($result->num_rows > 0) {
         $property_vacancy=$row["property_vacancy"];
         $property_management=$row["property_management"];
         $property_repairs=$row["property_repairs"];
+        $property_closing_costs=$row["property_closing_costs"];
+        $property_sale_fees=$row["property_sale_fees"];
     }
 } 
 
