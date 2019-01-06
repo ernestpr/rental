@@ -41,10 +41,24 @@ foreach($data as $key=>$t)
 
 }
 
+//
+function Footer()
+{
+    // Go to 1.5 cm from bottom
+    $this->SetY(-15);
+    // Select Arial italic 8
+    $this->SetFont('Arial','I',8);
+    // Print centered page number
+    $this->Cell(0,10,'Page '.$this->PageNo() . " Cashflowsy.com" ,0,0,'C');
+}
 
+
+
+//
 
 function BasicTable3($x, $col, $data)
 {
+  //var_dump($data);
   //$this->SetLeftMargin($x);
  
   $this->setX($x);
@@ -54,7 +68,8 @@ function BasicTable3($x, $col, $data)
     if ($key % 2==0) 
     {
       // Here is the even side 
-      $title=$t;
+      
+      $title=$t.":";
     }
     else
 
@@ -62,12 +77,14 @@ function BasicTable3($x, $col, $data)
       //odd number side
       //If its numeric and is zero then don't output
       $number=$t;
+      
 
     }  
     if (is_numeric($t) && $t>0  )
       {
+
         $this->Cell(40,10,$title,0,0,"R");
-        $this->Cell(20,10,$number,0,0,"R");
+        $this->Cell(20,10,"$".number_format($number,2),0,0,"R");
         $this->Ln();
         $this->setX($x);  
       }
@@ -156,7 +173,7 @@ function buildpdf()
 
       }
       
-    }echo "$";
+    }
     $this->Ln();
     
     }

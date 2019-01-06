@@ -1,9 +1,11 @@
 <?php 
+
 include "fileupload.php";
 include "db.php";
 include "pay.php";
 include "testit1.php";
 include "myclass.php";
+
 
 ?>
 
@@ -44,6 +46,7 @@ $total_cash_needed=$property_closing_costs+$down_payment;
 ?>
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Results of Analysis</title>
 
 
@@ -51,6 +54,12 @@ $total_cash_needed=$property_closing_costs+$down_payment;
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 <style >
 .rowheight {height:50px;}
+@media screen and (max-width: 768px) {
+    h2{
+        font-size:20px;
+    }
+}
+
 </style>
 </head>
 <body>
@@ -61,7 +70,7 @@ $total_cash_needed=$property_closing_costs+$down_payment;
 
   <div class="row">
 
-     <div class="col">
+     <div class="col-sm-6">
 
       <h1><?php echo $property_address ?></h1>
   
@@ -70,78 +79,80 @@ $total_cash_needed=$property_closing_costs+$down_payment;
 
     </div>
 
-    <div class="col">
-      <img src="<?php echo "images/".$property_photo?>" width="300" >
+    <div class="col-sm-6">
+      <img  class="img-responsive" src="<?php echo "images/".$property_photo?>"  width=100%>
     </div>  
 
 </div> <!--end row-->
 
 <div class="row">
 
-  <div class="col">
+  <div class="col col-sm">
 <!--used to be here-->
   </div>
 
 </div> 
 
+
+
 <div class="row" >
 
-  <div class="col">
-    <h1><?php echo "$ ".number_format($property_purchase_price) ?></h1>
-    <h2>Price</h2>
+  <div class="col-sm-6">
+    <h2><?php echo "Price $ ".number_format($property_purchase_price) ?></h1>
+   
 
-    <table class="table">
-
-        <tr>
-          <td>Closing Costs</td>
-          <td><?php echo "$".number_format($property_closing_costs) ?></td>
-        </tr>
-        <tr>
-          <td>Project Cost</td>
-          <td><?php echo "$".number_format($deal_cost) ?></td>
-        </tr>
-        <tr>
-          <td>Down Payment</td>
-          <td><?php echo "$".number_format($down_payment) ?></td>
-        </tr>
+    <table class="table table-responsive">
 
         <tr>
-          <td>Loan Amount</td>
-          <td><?php echo "$".number_format($pv) ?></td>
+          <td class="col col-sm">Closing Costs</td>
+          <td class="col col-sm"><?php echo "$".number_format($property_closing_costs) ?></td>
+        </tr>
+        <tr>
+          <td class="col col-sm">Project Cost</td>
+          <td class="col col-sm"><?php echo "$".number_format($deal_cost) ?></td>
+        </tr>
+        <tr>
+          <td class="col col-sm">Down Payment</td>
+          <td class="col col-sm"><?php echo "$".number_format($down_payment) ?></td>
         </tr>
 
         <tr>
-          <td>Amortized Over</td>
-          <td><?php echo $property_amortized . " years"?></td>
+          <td class="col col-sm">Loan Amount</td>
+          <td class="col col-sm"><?php echo "$".number_format($pv) ?></td>
         </tr>
 
         <tr>
-          <td>Interest Rate</td>
-          <td><?php echo number_format($property_interest_rate,3)."%" ?></td>
+          <td class="col col-sm">Amortized Over</td>
+          <td class="col col-sm"><?php echo $property_amortized . " years"?></td>
         </tr>
 
         <tr>
-          <td>Monthly P/I</td>
-          <td><?php echo "$". number_format($loan_payment,2) ?></td>
+          <td class="col col-sm">Interest Rate</td>
+          <td class="col col-sm"><?php echo number_format($property_interest_rate,3)."%" ?></td>
+        </tr>
+
+        <tr>
+          <td class="col col-sm">Monthly P/I</td>
+          <td class="col col-sm"><?php echo "$". number_format($loan_payment,2) ?></td>
         </tr>
         <tr>
-          <td>Total Cash Required</td>
-          <td><?php echo "$". number_format($total_cash_needed,2) ?></td>
+          <td class="col col-sm">Total Cash Required</td>
+          <td class="col col-sm"><?php echo "$". number_format($total_cash_needed,2) ?></td>
         </tr>
 
         </table>
     </div><!---end red --->
 
 
-    <div class="col">
+    <div class="col-sm-6">
   
 
       <table class="table">
           <tr>
-            <td>Total Income<td>Monthly Expenses</td><td>Net Operating Income</td>
+            <th scope="col col-sm">Total Income<th scope="" ="col col-sm">Monthly Expenses</td><th scope="" ="col col-sm" >Net Operating Income</td>
           </tr>
 <tr>
-<td><h2><?php echo "$". number_format($property_rent) ?></h2><td><h2><?php echo "$". number_format($year_1_expenses) ?></h2></td><td><h2><?php echo "$". number_format($noi*12);  ?></h2></td>
+<td><h2 ><?php echo "$". number_format($property_rent) ?></h2><td><h2 ><?php echo "$". number_format($year_1_expenses) ?></h2></td><td><h2 ><?php echo "$". number_format($noi*12);  ?></h2></td>
 
     </tr>
 
@@ -227,7 +238,7 @@ $datay3=$c1->propertyvalue;
 $graph = new Graph(600,400);
 $graph->SetScale("textlin");
 $graph->SetShadow();
-$graph->img->SetMargin(40,30,20,40);
+$graph->img->SetMargin(50,30,20,40);
  
 // Create the linear plots for each category
 $dplot1 = new LinePLot($datay1);
@@ -264,7 +275,7 @@ $graph->Stroke("loanBalance.png");
 $graph1 = new Graph(600,400);
 $graph1->SetScale("textlin");
 $graph1->SetShadow();
-$graph1->img->SetMargin(40,30,20,40);
+$graph1->img->SetMargin(50,30,20,40);
  
 // Create the linear plots for each category
 $dplot1 = new LinePLot($c1->noi);
@@ -299,10 +310,10 @@ $graph1->Stroke("income.png");
 ?>
 
 <div class="row"">
-  <div class="col">
-<img src="mypie.png">
+  <div class="col-sm-6">
+<img  class="img-responsive" src="mypie.png" width="100%">
 </div>
-<div class="col">
+<div class="col-sm-6">
   <h2>Monthly Expenses</h2>
   Total Operating Expense: <?php  echo  "$".number_format($year_1_expenses/12,2) ?><br>
   Mortgage: <?php echo "$".number_format($loan_payment,2)?><br>
@@ -313,18 +324,18 @@ $graph1->Stroke("income.png");
 </div>
 <!---//end of graph--->
 
-
+<div class="table-responsive">
 <?php $c1->buildit();?>
-
+</div>
 
 <div class="row">
-  <div class="col">
+  <div class="col-sm-6">
     
-    <img src="loanBalance.png" width=500>
+    <img  class="img-responsive"  src="loanBalance.png" width=100%>
   </div>
 
-  <div class="col">
-<img src="income.png" width=500>
+  <div class="col-sm-6">
+<img class="img-responsive" src="income.png" width=100%>
   </div>  
 
 
@@ -396,17 +407,18 @@ $pdf->Image('images/'.$property_photo,120,20,70);
 //pie charts
 $pdf->Image('mypie.png',10,175,120);
 
-$data=array("Electricity",number_format($property_electricity/12,2),
-  "Water and Sewer",number_format($property_watersewer/12,2),
-  "Insurance",number_format($property_insurance/12,2),
-  "Garbage", number_format($property_garbage/12,2),
-  "Property Taxes", number_format($property_taxes/12,2), 
-  "P/I",number_format($loan_payment,2),
-  "Vacancy",number_format($property_vacancy/100*$year_1_revenue/12,2),
-  "PMI",number_format($property_pmi/12,2),
-  "HOA", number_format($property_other_expense/12,2),
-  "Management Fees",number_format($property_management/100*$year_1_revenue/12,2),
-  "Property Repairs",number_format($property_repairs/100*$year_1_revenue/12,2)
+$data=array("Electricity",$property_electricity/12,
+  "Water and Sewer",$property_watersewer/12,
+  "Insurance",$property_insurance/12,
+  "Garbage", $property_garbage/12,
+  "Property Taxes", $property_taxes/12, 
+  "P/I",$loan_payment,
+  "Vacancy",$property_vacancy/100*$year_1_revenue/12,
+  "PMI",$property_pmi/12,
+"HOA", $property_hoa/12,
+  "Other Expense", $property_other_expense/12,
+  "Management Fees",$property_management/100*$year_1_revenue/12,
+  "Property Repairs",$property_repairs/100*$year_1_revenue/12
 );
 
 
@@ -436,11 +448,10 @@ $pdf->Image('income.png',50,135,110);
 $pdf->Output('F','out.pdf');
 
 
-//print legends on chart
-$data=array("Electricity","Water and Sewer", "Insurance","Garbage", "Property Taxes","Property Insurance", "P/I", "Vacancy", "PMI", "HOA", "Other Expense","Management Fees", "Property Repairs");
 
 
 ?>
-<a href="out.pdf">file</a>
+<a class="btn btn-primary"  download="out.pdf" href="out.pdf" role="button">Download PDF</a>
+
 </body>
 </html>

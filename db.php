@@ -1,8 +1,5 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "rental";
+include "config.php";
 
 
 //setup db pointer for test code
